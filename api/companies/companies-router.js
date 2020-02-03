@@ -37,7 +37,7 @@ router.post("/register", (req, res) => {
 });
 
 // endpoint for login to /api/companies/login
-router.post("/login", restrict, (req, res) => {
+router.post("/login", (req, res) => {
 	let { company_email, password } = req.body;
 
 	if (!company_email || !password) {

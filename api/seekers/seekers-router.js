@@ -36,7 +36,7 @@ router.post("/register", (req, res) => {
 });
 
 // endpoint for login in
-router.post("/login", restrict, (req, res) => {
+router.post("/login", (req, res) => {
 	let { username, password } = req.body;
 
 	if (!username || !password) {
