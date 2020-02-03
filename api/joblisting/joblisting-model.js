@@ -3,17 +3,14 @@ const db = require("../../data/dbConfig.js");
 module.exports = {
 	add,
 	find,
-	findJobs,
 	findBy,
 	findById,
-	findJobById,
-	findAllJobByCompanyId,
 	remove,
 	findCompanyById
 };
 
-async function add(company) {
-	const [id] = await db("companies").insert(company);
+async function add(job) {
+	const [id] = await db("joblisting").insert(job);
 
 	return findById(id);
 }
@@ -22,31 +19,15 @@ function find() {
 	return db("companies").select("id", "company_email", "password");
 }
 
-function findJobs() {
-	return db("joblisting").select("id", "job_title", "company", "job_location");
-}
-
 function findBy(filter) {
-	return db("companies").where(filter);
+	return db("joblisting").where(filter);
 }
 
 function findById(id) {
-	return db("companies")
-		.where({ id })
-		.first();
-}
-function findJobById(id) {
 	return db("joblisting")
 		.where({ id })
 		.first();
 }
-
-function findAllJobByCompanyId(id) {
-	return db("joblisting")
-		.where("company_id,req.params.id")
-		.first();
-}
-
 function findCompanyById(id) {
 	return db("companies")
 		.join("joblisting", "joblisting.companies_id", "companies.id")
@@ -59,7 +40,7 @@ function findCompanyById(id) {
 }
 
 function remove(id) {
-	return db("companies")
+	return db("joblisting")
 		.where("id", id)
 		.del();
 }

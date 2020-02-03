@@ -12,7 +12,7 @@ server.use(helmet());
 server.use(cors());
 server.use(express.json());
 
-server.use("/api/companies", restrict, companiesRouter);
+server.use("/api/companies", companiesRouter);
 server.use("/api/seekers", seekersRouter);
 
 server.get("/", (req, res) => {

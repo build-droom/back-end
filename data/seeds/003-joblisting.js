@@ -7,9 +7,8 @@ exports.seed = function(knex) {
 			return knex("joblisting").insert([
 				{
 					id: 1,
-					seekers_id: 4,
 					companies_id: 1,
-					job_title: "doctor",
+					job_position: "doctor",
 					company: "comp1",
 					description: "work in hospital",
 					job_location: "NewYork",
@@ -18,9 +17,8 @@ exports.seed = function(knex) {
 				},
 				{
 					id: 2,
-					seekers_id: 6,
 					companies_id: 1,
-					job_title: "nurse",
+					job_position: "nurse",
 					company: "comp1",
 					description: "work in hospital",
 					job_location: "NewYork",
@@ -29,9 +27,8 @@ exports.seed = function(knex) {
 				},
 				{
 					id: 3,
-					seekers_id: 6,
 					companies_id: 4,
-					job_title: "developer",
+					job_position: "developer",
 					company: "comp4",
 					description: "blah blah blah",
 					job_location: "Texas",
@@ -40,20 +37,19 @@ exports.seed = function(knex) {
 				},
 				{
 					id: 4,
-					seekers_id: 6,
 					companies_id: 5,
-					job_title: "developer",
+					job_position: "developer",
 					company: "comp5",
 					description: "blah blah blah",
 					job_location: "Texas",
+					experience_required: "true",
 					salary: 100000,
 					employment_type: "part-time"
 				},
 				{
 					id: 5,
-					seekers_id: 6,
 					companies_id: 5,
-					job_title: "developer",
+					job_position: "developer",
 					company: "comp5",
 					description: "blah blah blah",
 					job_location: "Texas",
@@ -62,9 +58,8 @@ exports.seed = function(knex) {
 				},
 				{
 					id: 6,
-					seekers_id: 7,
 					companies_id: 6,
-					job_title: "teacher",
+					job_position: "teacher",
 					company: "comp6",
 					description: "be a teacher blah blah",
 					job_location: "Arizona",

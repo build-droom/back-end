@@ -5,7 +5,20 @@ const router = require("express").Router();
 const { jwtSecret } = require("../../config/secrets.js");
 
 const Companies = require("./companies-model.js");
-const restricted = require("../authenticate-middleware.js");
+
+const restrict = require("../authenticate-middleware.js");
+
+function signToken(company) {
+	const payload = {
+		company
+	};
+
+	const options = {
+		expiresIn: "3d"
+	};
+
+	return jwt.sign(payload, jwtSecret, options);
+}
 
 // for endpoints beginning with /api/companies/register
 
@@ -24,7 +37,7 @@ router.post("/register", (req, res) => {
 });
 
 // endpoint for login to /api/companies/login
-router.post("/login", (req, res) => {
+router.post("/login", restrict, (req, res) => {
 	let { company_email, password } = req.body;
 
 	if (!company_email || !password) {
@@ -50,7 +63,7 @@ router.post("/login", (req, res) => {
 });
 
 //GET requests to /api/companies returns list of all companies
-router.get("/", restricted, (req, res) => {
+router.get("/", restrict, (req, res) => {
 	Companies.find()
 		.then(companies => {
 			res.json(companies);
@@ -58,16 +71,52 @@ router.get("/", restricted, (req, res) => {
 		.catch(err => res.send(err));
 });
 
-function signToken(company) {
-	const payload = {
-		company
-	};
+//GET requests to /api/companies/jobs returns list of ALL joblisting
+router.get("/jobs", (req, res) => {
+	Companies.findJobs()
+		.then(jobs => {
+			res.json(jobs);
+		})
+		.catch(err => res.send(err));
+});
 
-	const options = {
-		expiresIn: "1d"
-	};
+//get by id /api/companies/jobs/:id joblisting
+router.get("/jobs/:id", async (req, res) => {
+	const job = await Companies.findJobById(req.params.id);
+	if (job) {
+		res.status(200).json(job);
+	} else {
+		console.log("error in GET api/companies/jobs/:id");
+		res
+			.status(500)
+			.json({ error: "The joblisting information could not be retrieved." });
+	}
+});
 
-	return jwt.sign(payload, jwtSecret, options);
-}
+//get by id /api/companies/issued/:id joblisting based on comp id
+router.get("/jobs/issued/:id", async (req, res) => {
+	const job = await Companies.findAllJobById(req.params.id);
+	if (job) {
+		res.status(200).json(job);
+	} else {
+		console.log("error in GET api/companies/jobs/issued/:id");
+		res
+			.status(500)
+			.json({ error: "The joblisting information could not be retrieved." });
+	}
+});
+
+//get by id /api/companies/:id
+router.get("/:id", restrict, async (req, res) => {
+	const profile = await Companies.findById(req.params.id);
+	if (profile) {
+		res.status(200).json(profile);
+	} else {
+		console.log("error in GET api/companies/id");
+		res
+			.status(500)
+			.json({ error: "The companies information could not be retrieved." });
+	}
+});
 
 module.exports = router;

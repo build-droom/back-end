@@ -18,6 +18,7 @@ exports.seed = function(knex) {
 					seekers_location: "NewYork",
 					education: "bachelor",
 					experienced: false,
+					skills: "React,Node",
 					salary_sought: 80000,
 					employment_type_sought: "full-time",
 					isCompany: false
@@ -32,6 +33,7 @@ exports.seed = function(knex) {
 					seekers_location: "NewYork",
 					education: "bachelor",
 					experienced: false,
+					skills: "React,Node,Python",
 					salary_sought: 60000,
 					employment_type_sought: "full-time",
 					isCompany: false
@@ -46,6 +48,7 @@ exports.seed = function(knex) {
 					seekers_location: "NewYork",
 					education: "Vocational",
 					experienced: false,
+					skills: "Ruby,SQL,Node,HTML,CSS",
 					salary_sought: 70000,
 					employment_type_sought: "full-time",
 					isCompany: false
@@ -60,6 +63,7 @@ exports.seed = function(knex) {
 					seekers_location: "Texas",
 					education: "Masters",
 					experienced: true,
+					skills: "cosmetic-surgery",
 					salary_sought: 140000,
 					employment_type_sought: "full-time",
 					isCompany: false
@@ -74,6 +78,7 @@ exports.seed = function(knex) {
 					seekers_location: "Texas",
 					education: "Masters",
 					experienced: false,
+					skills: "cardiac-surgery",
 					salary_sought: 120000,
 					employment_type_sought: "part-time",
 					isCompany: false
@@ -88,6 +93,7 @@ exports.seed = function(knex) {
 					seekers_location: "California",
 					education: "Masters",
 					experienced: false,
+					skills: "ekg,basic life support,",
 					salary_sought: 100000,
 					employment_type_sought: "part-time",
 					isCompany: false
@@ -102,6 +108,7 @@ exports.seed = function(knex) {
 					seekers_location: "Colorado",
 					education: "bachelor",
 					experienced: false,
+					skills: "advanced mathematics, metallurgy, physics",
 					salary_sought: 100000,
 					employment_type_sought: "part-time",
 					isCompany: false
@@ -116,6 +123,7 @@ exports.seed = function(knex) {
 					seekers_location: "Alaska",
 					education: "bachelor",
 					experienced: true,
+					skills: "public speaking",
 					salary_sought: 80000,
 					employment_type_sought: "full-time",
 					isCompany: false
@@ -130,6 +138,7 @@ exports.seed = function(knex) {
 					seekers_location: "Alaska",
 					education: "vocational",
 					experienced: true,
+					skills: "powerpoint",
 					salary_sought: 50000,
 					employment_type_sought: "full-time",
 					isCompany: false
