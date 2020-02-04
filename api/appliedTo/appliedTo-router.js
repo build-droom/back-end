@@ -58,18 +58,18 @@ router.get("/:id", async (req, res) => {
 	}
 });
 
-//GET by id /api/apply/:id
-router.get("/:id", async (req, res) => {
-	const apply = await Apply.findJobById(req.params.id);
-	if (apply) {
-		res.status(200).json(apply);
-	} else {
-		console.log("error in GET api/apply/:id");
-		res
-			.status(500)
-			.json({ error: "The application information could not be retrieved." });
-	}
-});
+// //GET by id /api/apply/:id
+// router.get("/:id", async (req, res) => {
+// 	const apply = await Apply.findJobById(req.params.id);
+// 	if (apply) {
+// 		res.status(200).json(apply);
+// 	} else {
+// 		console.log("error in GET api/apply/:id");
+// 		res
+// 			.status(500)
+// 			.json({ error: "The application information could not be retrieved." });
+// 	}
+// });
 
 // deleting a joblisting
 router.delete("/:id", (req, res) => {
