@@ -5,9 +5,17 @@ module.exports = {
 	find,
 	findBy,
 	findById,
+	findJobById,
 	remove,
-	findCompanyById
+	findCompanyById,
+	insert,
+	update
 };
+function insert(job) {
+	return db("joblisting")
+		.insert(job, "id")
+		.then(ids => ({ id: ids[0] }));
+}
 
 async function add(job) {
 	const [id] = await db("joblisting").insert(job);
@@ -16,7 +24,7 @@ async function add(job) {
 }
 
 function find() {
-	return db("companies").select("id", "company_email", "password");
+	return db("joblisting");
 }
 
 function findBy(filter) {
@@ -28,6 +36,11 @@ function findById(id) {
 		.where({ id })
 		.first();
 }
+
+function findJobById(id) {
+	return db("joblisting").where({ companies_id: id });
+}
+
 function findCompanyById(id) {
 	return db("companies")
 		.join("joblisting", "joblisting.companies_id", "companies.id")
@@ -43,4 +56,10 @@ function remove(id) {
 	return db("joblisting")
 		.where("id", id)
 		.del();
+}
+
+function update(id, changes) {
+	return db("joblisting")
+		.where({ id })
+		.update(changes);
 }

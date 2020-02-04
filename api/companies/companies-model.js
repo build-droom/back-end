@@ -43,7 +43,7 @@ function findJobById(id) {
 
 function findAllJobByCompanyId(id) {
 	return db("joblisting")
-		.where("company_id,req.params.id")
+		.where("company_id", id)
 		.first();
 }
 

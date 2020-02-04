@@ -21,7 +21,6 @@ function signToken(company) {
 }
 
 // for endpoints beginning with /api/companies/register
-
 router.post("/register", (req, res) => {
 	let company = req.body;
 	const hash = bcrypt.hashSync(company.password, 3); // 2 ^ n
@@ -80,7 +79,7 @@ router.get("/jobs", (req, res) => {
 		.catch(err => res.send(err));
 });
 
-//get by id /api/companies/jobs/:id joblisting
+//GET by id /api/companies/jobs/:id joblisting
 router.get("/jobs/:id", async (req, res) => {
 	const job = await Companies.findJobById(req.params.id);
 	if (job) {
@@ -118,5 +117,4 @@ router.get("/:id", restrict, async (req, res) => {
 			.json({ error: "The companies information could not be retrieved." });
 	}
 });
-
 module.exports = router;

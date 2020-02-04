@@ -1,17 +1,17 @@
 const bcrypt = require("bcryptjs");
+const db = require("../../data/dbConfig.js");
 const jwt = require("jsonwebtoken");
 const router = require("express").Router();
 
 const { jwtSecret } = require("../../config/secrets.js");
 
-const Job = require("./joblisting-model.js");
-const Companies = require("../companies/companies-model.js");
+const Jobs = require("./joblisting-model.js");
 
 const restrict = require("../authenticate-middleware.js");
 
-function signToken(company) {
+function signToken(job) {
 	const payload = {
-		company
+		job
 	};
 
 	const options = {
@@ -21,41 +21,95 @@ function signToken(company) {
 	return jwt.sign(payload, jwtSecret, options);
 }
 
-//Creates a job for the company with the specified id using information sent inside of the `request
-//not working below need to fix
-//api/joblisting/:id
-router.post("/:id/job", (req, res) => {
-	const { text } = req.body;
+router.post("/", restrict, (req, res) => {
+	const newJob = req.body;
+	db("joblisting")
+		.insert(newJob)
+		.then(joblisting => {
+			res.status(201).json(joblisting);
+		})
+		.catch(err => {
+			console.log(err);
+		});
+});
 
-	const id = req.params.id;
+//GET requests to /api/joblisting returns list of all joblistings
+router.get("/", restrict, (req, res) => {
+	Jobs.find()
+		.then(joblisting => {
+			res.json(joblisting);
+		})
+		.catch(err => {
+			console.log(err, "error in joblisting-router /get");
+			res.send(err);
+		});
+});
 
-	Companies.findById(id).then(companies => {
-		if (!companies[0]) {
-			res.status(404).json("The company with the specified ID does not exist.");
-		}
-	});
-
-	if (!text) {
-		res
-			.status(400)
-			.json({ errorMessage: "Please provide text for the comment." });
+//GET by id /api/joblisting:id joblisting
+router.get("/:id", async (req, res) => {
+	const job = await Jobs.findById(req.params.id);
+	if (job) {
+		res.status(200).json(job);
 	} else {
-		Companies.insert({ text })
-			.then(newjob => {
-				if (!newjob) {
-					res.status(404).json({
-						message: "The job with the specified ID does not exist."
-					});
-				} else {
-					res.status(201).json(newjob);
-				}
-			})
-			.catch(error => {
-				console.log(error);
-				res.status(500).json({
-					error:
-						"There was an error while saving the new joblisting to the database"
-				});
-			});
+		console.log("error in GET api/joblisting/:id");
+		res
+			.status(500)
+			.json({ error: "The joblisting information could not be retrieved." });
 	}
 });
+
+//GET by id /api/joblisting/company/:id
+router.get("/company/:id", async (req, res) => {
+	const jobs = await Jobs.findJobById(req.params.id);
+	if (jobs) {
+		res.status(200).json(jobs);
+	} else {
+		console.log("error in GET api/joblisting/:id");
+		res
+			.status(500)
+			.json({ error: "The joblisting information could not be retrieved." });
+	}
+});
+
+// deleting a joblisting
+router.delete("/:id", (req, res) => {
+	const { id } = req.params;
+
+	Jobs.remove(id)
+		.then(deleted => {
+			if (deleted) {
+				res.json({ removed: deleted });
+			} else {
+				res
+					.status(404)
+					.json({ message: "Could not find a joblisting with given id" });
+			}
+		})
+		.catch(err => {
+			res.status(500).json({ message: "Failed to delete recipe" });
+		});
+});
+
+//put request to api/joblisting
+router.put("/:id", (req, res) => {
+	const { id } = req.params;
+	const changes = req.body;
+
+	db("joblisting")
+		.where({ id })
+		.update(changes)
+		.then(job => {
+			if (job) {
+				res.json({ update: job });
+			} else {
+				res
+					.status(404)
+					.json({ message: "Could not find joblisting with given id" });
+			}
+		})
+		.catch(err => {
+			res.status(500).json({ message: "Failed to update joblisting" });
+		});
+});
+
+module.exports = router;

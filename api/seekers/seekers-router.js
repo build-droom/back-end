@@ -73,6 +73,19 @@ router.get("/", restrict, (req, res) => {
 		});
 });
 
+//get by id /api/seekers/:id
+router.get("/:id", async (req, res) => {
+	const seeker = await Seekers.findById(req.params.id);
+	if (seeker) {
+		res.status(200).json(seeker);
+	} else {
+		console.log("error in GET api/seekers/id");
+		res
+			.status(500)
+			.json({ error: "The companies information could not be retrieved." });
+	}
+});
+
 // Update a seeker with specified id using PUT /api/seekers/:id
 router.put("/:id", async (req, res) => {
 	const {
