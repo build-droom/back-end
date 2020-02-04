@@ -5,7 +5,7 @@ const router = require("express").Router();
 const { jwtSecret } = require("../../config/secrets.js");
 
 const Seekers = require("./seekers-model.js");
-const restricted = require("../authenticate-middleware.js");
+const restrict = require("../authenticate-middleware.js");
 
 function signToken(seeker) {
 	const payload = {
@@ -13,7 +13,7 @@ function signToken(seeker) {
 	};
 
 	const options = {
-		expiresIn: "1d"
+		expiresIn: "3d"
 	};
 
 	return jwt.sign(payload, jwtSecret, options);
@@ -36,7 +36,7 @@ router.post("/register", (req, res) => {
 });
 
 // endpoint for login in
-router.post("/login", restricted, (req, res) => {
+router.post("/login", (req, res) => {
 	let { username, password } = req.body;
 
 	if (!username || !password) {
@@ -62,7 +62,7 @@ router.post("/login", restricted, (req, res) => {
 });
 
 //GET requests to /api/seekers returns list of all seekers
-router.get("/", restricted, (req, res) => {
+router.get("/", restrict, (req, res) => {
 	Seekers.find()
 		.then(seekers => {
 			res.json(seekers);
@@ -70,6 +70,84 @@ router.get("/", restricted, (req, res) => {
 		.catch(err => {
 			console.log(err, "error in seekers-router /get");
 			res.send(err);
+		});
+});
+
+//get by id /api/seekers/:id
+router.get("/:id", restrict, async (req, res) => {
+	const profile = await Seekers.findById(req.params.id);
+	if (profile) {
+		res.status(200).json(profile);
+	} else {
+		console.log("error in GET api/seekers/id");
+		res
+			.status(500)
+			.json({ error: "Seekers information could not be retrieved." });
+	}
+});
+
+// Update a seeker with specified id using PUT /api/seekers/:id
+router.put("/:id", async (req, res) => {
+	const {
+		username,
+		full_name,
+		seekers_email,
+		occupation,
+		seekers_location,
+		education,
+		experienced,
+		id
+	} = req.body;
+
+	if (
+		!username ||
+		!full_name ||
+		!seekers_email ||
+		!occupation ||
+		!seekers_location ||
+		!education ||
+		!experienced ||
+		!id
+	) {
+		res.status(400).json({
+			message:
+				"Make sure username, full_name, seekers_email,occupation,seekers_location, education, experienced, id are included"
+		});
+	}
+	try {
+		const seeker = await Seekers.findById(req.params.id);
+
+		if (!seeker)
+			return res.status(404).json({
+				message: "Profile doesn't exist"
+			});
+
+		const updatedSeeker = await Seekers.update(req.body);
+
+		res.status(200).json(updatedSeeker);
+	} catch (err) {
+		res.status(500).json({
+			message: " Something went wrong while updating"
+		});
+	}
+});
+
+// deleting a seeker
+router.delete("/:id", (req, res) => {
+	const { id } = req.params;
+
+	Seekers.remove(id)
+		.then(deleted => {
+			if (deleted) {
+				res.json({ removed: deleted });
+			} else {
+				res
+					.status(404)
+					.json({ message: "Could not find a seeker with given id" });
+			}
+		})
+		.catch(err => {
+			res.status(500).json({ message: "Failed to delete recipe" });
 		});
 });
 

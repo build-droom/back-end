@@ -6,7 +6,7 @@ exports.up = async function(knex) {
 			.notNullable()
 			.unique();
 		tbl
-			.string("company_email", 50)
+			.string("company_email", 100)
 			.notNullable()
 			.unique();
 		tbl.string("password", 50).notNullable();
@@ -19,15 +19,16 @@ exports.up = async function(knex) {
 
 	await knex.schema.createTable("seekers", tbl => {
 		tbl.increments();
+
 		tbl.string("username", 50).notNullable();
 
-		tbl.string("full_name", 50).notNullable();
+		tbl.string("full_name", 128).notNullable();
 
-		tbl.string("seekers_email", 50).notNullable();
+		tbl.string("seekers_email", 128).notNullable();
 		tbl.string("password", 50).notNullable();
 		tbl.string("occupation", 50).notNullable();
-		tbl.string("seekers_location", 50).notNullable();
-		tbl.string("education", 128).notNullable();
+		tbl.string("seekers_location", 128);
+		tbl.string("education", 128);
 		tbl.boolean("experienced").defaultTo(false);
 		tbl.string("skills", 200);
 		tbl.integer("salary_sought");
@@ -38,22 +39,19 @@ exports.up = async function(knex) {
 
 	await knex.schema.createTable("joblisting", tbl => {
 		tbl.increments();
+
 		tbl
-			.integer("seekers_id")
+			.integer("companies_id")
 			.notNullable()
 			.unsigned()
 			.references("id")
-			.inTable("seekers"),
-			tbl
-				.integer("companies_id")
-				.notNullable()
-				.unsigned()
-				.references("id")
-				.inTable("companies");
+			.inTable("companies")
+			.onDelete("CASCADE")
+			.onUpdate("CASCADE");
 		tbl.string("job_title", 50).notNullable();
 		tbl.string("company", 50).notNullable();
 		tbl.string("description", 300);
-		tbl.string("job_location", 50);
+		tbl.string("job_location", 150);
 		tbl.string("education_required", 128); // high school grad, vocational, bachelors, masters
 		tbl.boolean("experience_required").defaultTo(false);
 		tbl.string("skills_required", 128);
@@ -64,6 +62,7 @@ exports.up = async function(knex) {
 
 	await knex.schema.createTable("matches", tbl => {
 		tbl.increments();
+
 		tbl
 			.integer("seekers_id")
 			.notNullable()
@@ -76,11 +75,11 @@ exports.up = async function(knex) {
 			.unsigned()
 			.references("id")
 			.inTable("joblisting");
-		tbl.boolean("liked_by_seeker").defaultTo(true);
-		tbl.boolean("liked_by_company").defaultTo(true);
+		tbl.boolean("fave_of_seeker").defaultTo(false);
+		tbl.boolean("fave_for_job").defaultTo(false);
 	});
 
-	await knex.schema.createTable("favorites", tbl => {
+	await knex.schema.createTable("appliedTo", tbl => {
 		tbl.increments();
 		tbl
 			.integer("seekers_id")
@@ -99,7 +98,7 @@ exports.up = async function(knex) {
 };
 
 exports.down = async function(knex) {
-	await knex.schema.dropTableIfExists("favorites");
+	await knex.schema.dropTableIfExists("appliedTo");
 	await knex.schema.dropTableIfExists("matches");
 	await knex.schema.dropTableIfExists("joblisting");
 	await knex.schema.dropTableIfExists("seekers");
