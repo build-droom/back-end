@@ -50,7 +50,7 @@ router.post("/login", (req, res) => {
 				if (company && bcrypt.compareSync(password, company.password)) {
 					const token = signToken(company); // <<<<<<<<<<<
 
-					res.status(200).json({ token }); // <<<<<<<<<<
+					res.status(200).json({ company, token }); // <<<<<<<<<<
 				} else {
 					res.status(401).json({ message: "Invalid Credentials" });
 				}

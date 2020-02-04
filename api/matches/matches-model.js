@@ -3,12 +3,10 @@ const db = require("../../data/dbConfig.js");
 module.exports = {
 	add,
 	find,
-	findJobs,
 	findBy,
 	findById,
-	findJobById,
-	findAllJobByCompanyId,
-	remove
+	remove,
+	findMatch
 };
 
 async function add(match) {
@@ -18,47 +16,34 @@ async function add(match) {
 }
 
 function find() {
-	return db("companies").select("id", "company_email", "password");
-}
-
-function findJobs() {
-	return db("joblisting").select("id", "job_title", "company", "job_location");
+	return db("matches");
 }
 
 function findBy(filter) {
-	return db("companies").where(filter);
+	return db("matches").where(filter);
 }
 
 function findById(id) {
-	return db("companies")
-		.where({ id })
-		.first();
-}
-function findJobById(id) {
-	return db("joblisting")
+	return db("matches")
 		.where({ id })
 		.first();
 }
 
-function findAllJobByCompanyId(id) {
-	return db("joblisting")
-		.where("company_id", id)
-		.first();
-}
+// function findSteps(id) {
+//     return db("schemes")
+//     .join("steps", "schemes.id", "steps.scheme_id")
+//     .select("steps.id","schemes.scheme_name", "steps.step_number", "steps.instructions")
+//     .where(".steps.scheme_id", id);
 
 function findMatch(id) {
-	return db("companies")
-		.join("joblisting", "joblisting.companies_id", "companies.id")
-		.select(
-			"companies.*",
-			"joblisting.job_tile as joblisting_position",
-			"joblisting.id"
-		)
-		.where("companies.id", id);
+	return db("seekers")
+		.where("seekers.id", id)
+		.join("joblisting", "joblisting.job_position", "seekers.occupation")
+		.select();
 }
 
 function remove(id) {
-	return db("companies")
+	return db("matches")
 		.where("id", id)
 		.del();
 }

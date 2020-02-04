@@ -7,7 +7,7 @@ const companiesRouter = require("./companies/companies-router.js");
 const seekersRouter = require("./seekers/seekers-router.js");
 const jobsRouter = require("./joblisting/joblisting-router");
 // const appliedRouter = require("./appliedTo/appliedTo-router");
-// const matchRouter = require("./matches/matches-router");
+const matchRouter = require("./matches/matches-router");
 
 const server = express();
 
@@ -19,7 +19,7 @@ server.use("/api/companies", companiesRouter);
 server.use("/api/seekers", seekersRouter);
 server.use("/api/jobs", jobsRouter);
 // server.use("/api/apply", restrict, appliedRouter);
-// server.use("/api/matches", matchRouter);
+server.use("/api/matches", matchRouter);
 
 server.get("/", (req, res) => {
 	res.status(200).json({ api: "Server is up and running!" });

@@ -72,6 +72,7 @@ exports.up = async function(knex) {
 			.inTable("joblisting");
 		tbl.boolean("fave_of_seeker").defaultTo(false);
 		tbl.boolean("fave_for_job").defaultTo(false);
+		tbl.boolean("matched_occupation").defaultTo(true);
 	});
 
 	await knex.schema.createTable("appliedTo", tbl => {
