@@ -19,6 +19,12 @@ function signToken(seeker) {
 	return jwt.sign(payload, jwtSecret, options);
 }
 
+/**
+ * @api {post} /api/seekers/register
+ * @apidescription This is the endpoint to register a new job-seeker
+ *
+ */
+
 // for endpoints beginning with /api/seekers/register
 router.post("/register", (req, res) => {
 	let seeker = req.body;
