@@ -45,7 +45,7 @@ router.get("/", restrict, (req, res) => {
 		});
 });
 
-//GET by id /api/joblisting:id joblisting
+//GET by id /api/jobs:id joblisting
 router.get("/:id", async (req, res) => {
 	const job = await Jobs.findById(req.params.id);
 	if (job) {
@@ -58,7 +58,7 @@ router.get("/:id", async (req, res) => {
 	}
 });
 
-//GET by id /api/joblisting/company/:id
+//GET by id /api/jobs/company/:id
 router.get("/company/:id", async (req, res) => {
 	const jobs = await Jobs.findJobById(req.params.id);
 	if (jobs) {

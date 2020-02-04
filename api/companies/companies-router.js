@@ -79,32 +79,6 @@ router.get("/jobs", (req, res) => {
 		.catch(err => res.send(err));
 });
 
-//GET by id /api/companies/jobs/:id joblisting
-// router.get("/jobs/:id", async (req, res) => {
-// 	const job = await Companies.findJobById(req.params.id);
-// 	if (job) {
-// 		res.status(200).json(job);
-// 	} else {
-// 		console.log("error in GET api/companies/jobs/:id");
-// 		res
-// 			.status(500)
-// 			.json({ error: "The joblisting information could not be retrieved." });
-// 	}
-// });
-
-//get by id /api/companies/issued/:id joblisting based on comp id
-// router.get("/jobs/issued/:id", async (req, res) => {
-// 	const job = await Companies.findAllJobById(req.params.id);
-// 	if (job) {
-// 		res.status(200).json(job);
-// 	} else {
-// 		console.log("error in GET api/companies/jobs/issued/:id");
-// 		res
-// 			.status(500)
-// 			.json({ error: "The joblisting information could not be retrieved." });
-// 	}
-// });
-
 //get by id /api/companies/:id
 router.get("/:id", restrict, async (req, res) => {
 	const profile = await Companies.findById(req.params.id);
@@ -116,5 +90,68 @@ router.get("/:id", restrict, async (req, res) => {
 			.status(500)
 			.json({ error: "The companies information could not be retrieved." });
 	}
+});
+
+//endpoint for put request to update company
+// Update a seeker with specified id using PUT /api/companies/id
+router.put("/:id", async (req, res) => {
+	const {
+		id,
+		company_name,
+		company_email,
+		password,
+		companies_description,
+		companies_location,
+		industry_type
+	} = req.body;
+
+	if (
+		!id ||
+		!company_name ||
+		!company_email ||
+		!password ||
+		!companies_description ||
+		!companies_location ||
+		!industry_type
+	) {
+		res.status(400).json({
+			message: "Missing data in request."
+		});
+	}
+	try {
+		const company = await Companies.findById(req.params.id);
+
+		if (!company)
+			return res.status(404).json({
+				message: "Profile doesn't exist"
+			});
+
+		const updatedComp = await Companies.update(req.body);
+
+		res.status(200).json(updatedComp);
+	} catch (err) {
+		res.status(500).json({
+			message: " Something went wrong while updating company."
+		});
+	}
+});
+
+// deleting a company
+router.delete("/:id", (req, res) => {
+	const { id } = req.params;
+
+	Companies.remove(id)
+		.then(deleted => {
+			if (deleted) {
+				res.json({ removed: deleted });
+			} else {
+				res
+					.status(404)
+					.json({ message: "Could not the company with given id" });
+			}
+		})
+		.catch(err => {
+			res.status(500).json({ message: "Failed to delete company" });
+		});
 });
 module.exports = router;

@@ -17,7 +17,7 @@ server.use(express.json());
 
 server.use("/api/companies", companiesRouter);
 server.use("/api/seekers", seekersRouter);
-server.use("/api/joblisting", jobsRouter);
+server.use("/api/jobs", jobsRouter);
 // server.use("/api/apply", restrict, appliedRouter);
 // server.use("/api/matches", matchRouter);
 

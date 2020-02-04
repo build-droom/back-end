@@ -9,7 +9,8 @@ module.exports = {
 	findJobById,
 	findAllJobByCompanyId,
 	remove,
-	findCompanyById
+	findCompanyById,
+	update
 };
 
 async function add(company) {
@@ -62,4 +63,10 @@ function remove(id) {
 	return db("companies")
 		.where("id", id)
 		.del();
+}
+
+async function update(company) {
+	await db("companies")
+		.update(company)
+		.where({ id: company.id });
 }
