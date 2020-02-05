@@ -9,18 +9,6 @@ const Jobs = require("./joblisting-model.js");
 
 const restrict = require("../authenticate-middleware.js");
 
-function signToken(job) {
-	const payload = {
-		job
-	};
-
-	const options = {
-		expiresIn: "3d"
-	};
-
-	return jwt.sign(payload, jwtSecret, options);
-}
-
 router.post("/", restrict, (req, res) => {
 	const newJob = req.body;
 	db("joblisting")

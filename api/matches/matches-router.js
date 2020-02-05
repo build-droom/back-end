@@ -8,7 +8,7 @@ const Match = require("./matches-model.js");
 const restrict = require("../authenticate-middleware.js");
 
 // GET requests to /api/matches returns list of ALL matched entries
-router.get("/", (req, res) => {
+router.get("/", restrict, (req, res) => {
 	Match.find()
 		.then(matches => {
 			res.json(matches);
@@ -16,22 +16,10 @@ router.get("/", (req, res) => {
 		.catch(err => res.send(err));
 });
 
-// query matches
-// router.get("/:id", async (req, res) => {
-// 	const id = req.params.id;
-// 	const myMatches = await Match.findMatch(id)
-// 		.then(myMatches => {
-// 			res.status(200).json(myMatches);
-// 		})
-// 		.catch(err => {
-// 			console.log(err, "error matching");
-// 			res.status(500).json({ error: "error cannot do matches" });
-// 		});
-// });
-
-router.get("/:id", async (req, res) => {
+//seekers looking for matching jobs
+router.get("/:id", restrict, async (req, res) => {
 	const id = req.params.id;
-	const matches = await Match.findMatch(id);
+	const matches = await Match.findJobs(id);
 	if (matches) {
 		res.status(200).json(matches);
 	} else {
@@ -40,60 +28,47 @@ router.get("/:id", async (req, res) => {
 	}
 });
 
-// async function add(match) {
-// 	const [id] = await db("matches").insert(match);
+//companies looking for matched seekers
+router.get("/matchseeker/:id", restrict, async (req, res) => {
+	const id = req.params.id;
+	const matches = await Match.findSeeker(id);
+	if (matches) {
+		res.status(200).json(matches);
+	} else {
+		console.log("error in GET api/matches/:id");
+		res.status(500).json({ error: "Could not find any matches" });
+	}
+});
 
-// 	return findById(id);
-// }
+//add matches to saved favorites
+router.post("/", restrict, (req, res) => {
+	const match = req.body;
+	Match.add(match)
+		.then(match => {
+			res.status(201).json(match);
+		})
+		.catch(err => {
+			console.log(err);
+		});
+});
 
-// router.post("/", (req, res) => {
-// 	const newMatch = req.body;
-// 	Match.add(newMatch)
-// 		.then(matches => {
-// 			res.status(201).json();
-// 		})
-// 		.catch(err => {
-// 			console.log(err);
-// 		});
-// });
+// deleting a saved match
+router.delete("/:id", (req, res) => {
+	const { id } = req.params;
 
-//GET by id /api/companies/jobs/:id joblisting
-// router.get("/jobs/:id", async (req, res) => {
-// 	const job = await Companies.findJobById(req.params.id);
-// 	if (job) {
-// 		res.status(200).json(job);
-// 	} else {
-// 		console.log("error in GET api/companies/jobs/:id");
-// 		res
-// 			.status(500)
-// 			.json({ error: "The joblisting information could not be retrieved." });
-// 	}
-// });
-
-//get by id /api/companies/issued/:id joblisting based on comp id
-// router.get("/jobs/issued/:id", async (req, res) => {
-// 	const job = await Companies.findAllJobById(req.params.id);
-// 	if (job) {
-// 		res.status(200).json(job);
-// 	} else {
-// 		console.log("error in GET api/companies/jobs/issued/:id");
-// 		res
-// 			.status(500)
-// 			.json({ error: "The joblisting information could not be retrieved." });
-// 	}
-// });
-
-//get by id /api/companies/:id
-// router.get("/:id", restrict, async (req, res) => {
-// 	const profile = await Companies.findById(req.params.id);
-// 	if (profile) {
-// 		res.status(200).json(profile);
-// 	} else {
-// 		console.log("error in GET api/companies/id");
-// 		res
-// 			.status(500)
-// 			.json({ error: "The companies information could not be retrieved." });
-// 	}
-// });
+	Match.remove(id)
+		.then(deleted => {
+			if (deleted) {
+				res.json({ removed: deleted });
+			} else {
+				res
+					.status(404)
+					.json({ message: "Could not find a saved match with given id" });
+			}
+		})
+		.catch(err => {
+			res.status(500).json({ message: "Failed to delete recipe" });
+		});
+});
 
 module.exports = router;

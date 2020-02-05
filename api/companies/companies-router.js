@@ -70,15 +70,6 @@ router.get("/", restrict, (req, res) => {
 		.catch(err => res.send(err));
 });
 
-//GET requests to /api/companies/jobs returns list of ALL joblisting
-router.get("/jobs", (req, res) => {
-	Companies.findJobs()
-		.then(jobs => {
-			res.json(jobs);
-		})
-		.catch(err => res.send(err));
-});
-
 //get by id /api/companies/:id
 router.get("/:id", restrict, async (req, res) => {
 	const profile = await Companies.findById(req.params.id);

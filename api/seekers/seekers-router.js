@@ -69,7 +69,9 @@ router.get("/", restrict, (req, res) => {
 		})
 		.catch(err => {
 			console.log(err, "error in seekers-router /get");
-			res.send(err);
+			res
+				.status(500)
+				.json({ error: "Error unable to retrieve list of job seekers" });
 		});
 });
 
@@ -111,7 +113,7 @@ router.put("/:id", async (req, res) => {
 	) {
 		res.status(400).json({
 			message:
-				"Make sure username, full_name, seekers_email,occupation,seekers_location, education, experienced, id are included"
+				"Make sure username, full_name, seekers_email,occupation,seekers_location, education, experienced are included"
 		});
 	}
 	try {

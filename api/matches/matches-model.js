@@ -6,7 +6,8 @@ module.exports = {
 	findBy,
 	findById,
 	remove,
-	findMatch
+	findJobs,
+	findSeeker
 };
 
 async function add(match) {
@@ -35,9 +36,16 @@ function findById(id) {
 //     .select("steps.id","schemes.scheme_name", "steps.step_number", "steps.instructions")
 //     .where(".steps.scheme_id", id);
 
-function findMatch(id) {
-	return db("seekers")
+function findJobs(id) {
+	return db("joblisting")
 		.where("seekers.id", id)
+		.join("seekers", "joblisting.job_position", "seekers.occupation")
+		.select();
+}
+
+function findSeeker(id) {
+	return db("seekers")
+		.where("joblisting.id", id)
 		.join("joblisting", "joblisting.job_position", "seekers.occupation")
 		.select();
 }
