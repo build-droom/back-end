@@ -55,6 +55,7 @@ function findSeeker(id) {
 // select *
 // from matches
 // join seekers on matches.seekers_id = seekers.id
+//where
 // join joblisting on matches.joblisting_id = joblisting.id
 // where ( "fave_of_seeker"="true" and "joblisting_id"=4)
 
@@ -62,7 +63,7 @@ function findSeeker(id) {
 async function faveOfSeeker(id) {
 	return db("matches")
 		.select()
-		.where("matches.joblisting_id", id)
+		.where({ "matches.joblisting_id": id, fave_of_seeker: "true" })
 		.join("seekers", "matches.seekers_id", "seekers.id")
 		.join("joblisting", "matches.joblisting_id", "joblisting.id");
 

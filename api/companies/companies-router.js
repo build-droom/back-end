@@ -3,9 +3,7 @@ const jwt = require("jsonwebtoken");
 const router = require("express").Router();
 
 const { jwtSecret } = require("../../config/secrets.js");
-
 const Companies = require("./companies-model.js");
-
 const restrict = require("../authenticate-middleware.js");
 
 function signToken(company) {
@@ -20,7 +18,7 @@ function signToken(company) {
 	return jwt.sign(payload, jwtSecret, options);
 }
 
-// for endpoints beginning with /api/companies/register
+// POST TO REGISTER COMPANY
 router.post("/register", (req, res) => {
 	let company = req.body;
 	const hash = bcrypt.hashSync(company.password, 3); // 2 ^ n
@@ -36,7 +34,7 @@ router.post("/register", (req, res) => {
 		});
 });
 
-// endpoint for login to /api/companies/login
+// POST TO LOG IN AS COMPANY
 router.post("/login", (req, res) => {
 	let { company_email, password } = req.body;
 
@@ -62,7 +60,7 @@ router.post("/login", (req, res) => {
 	}
 });
 
-//GET requests to /api/companies returns list of all companies
+//GET LIST OF ALL COMPANIES
 router.get("/", restrict, (req, res) => {
 	Companies.find()
 		.then(companies => {
@@ -71,7 +69,7 @@ router.get("/", restrict, (req, res) => {
 		.catch(err => res.send(err));
 });
 
-//get by id /api/companies/:id
+//GET COMPANY BY ID
 router.get("/:id", restrict, async (req, res) => {
 	const profile = await Companies.findById(req.params.id);
 	if (profile) {
@@ -84,8 +82,7 @@ router.get("/:id", restrict, async (req, res) => {
 	}
 });
 
-//endpoint for put request to update company
-// Update a seeker with specified id using PUT /api/companies/id
+//UPDATE A SPECIFIC COMPANY
 router.put("/:id", async (req, res) => {
 	const {
 		id,
@@ -115,7 +112,7 @@ router.put("/:id", async (req, res) => {
 
 		if (!company)
 			return res.status(404).json({
-				message: "Profile doesn't exist"
+				message: " Company Profile doesn't exist"
 			});
 
 		const updatedComp = await Companies.update(req.body);

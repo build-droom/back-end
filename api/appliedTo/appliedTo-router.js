@@ -58,7 +58,7 @@ router.get("/:id", async (req, res) => {
 // 	}
 // });
 
-// deleting a joblisting
+// deleting a saved  application log
 router.delete("/:id", (req, res) => {
 	const { id } = req.params;
 
