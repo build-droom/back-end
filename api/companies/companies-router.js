@@ -83,7 +83,7 @@ router.get("/:id", restrict, async (req, res) => {
 });
 
 //UPDATE A SPECIFIC COMPANY
-router.put("/:id", async (req, res) => {
+router.put("/:id", restrict, async (req, res) => {
 	const {
 		id,
 		company_name,
@@ -125,8 +125,8 @@ router.put("/:id", async (req, res) => {
 	}
 });
 
-// deleting a company
-router.delete("/:id", (req, res) => {
+// DELETE A COMPANY
+router.delete("/:id", restrict, (req, res) => {
 	const { id } = req.params;
 
 	Companies.remove(id)

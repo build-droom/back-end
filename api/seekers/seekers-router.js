@@ -19,7 +19,7 @@ function signToken(seeker) {
 	return jwt.sign(payload, jwtSecret, options);
 }
 
-// for endpoints beginning with /api/seekers/register
+//REGISTER AS A NEW JOB SEEKER
 router.post("/register", (req, res) => {
 	let seeker = req.body;
 	const hash = bcrypt.hashSync(seeker.password, 3); // 2 ^ n
@@ -36,7 +36,7 @@ router.post("/register", (req, res) => {
 		});
 });
 
-// endpoint for login in
+// LOGIN AS A JOB SEEKER
 router.post("/login", (req, res) => {
 	let { username, password } = req.body;
 
@@ -80,7 +80,7 @@ router.get("/", restrict, (req, res) => {
 });
 
 //get by id /api/seekers/:id
-router.get("/:id", async (req, res) => {
+router.get("/:id", restrict, async (req, res) => {
 	const seeker = await Seekers.findById(req.params.id);
 	if (seeker) {
 		res.status(200).json(seeker);
@@ -93,7 +93,7 @@ router.get("/:id", async (req, res) => {
 });
 
 // Update a seeker with specified id using PUT /api/seekers/:id
-router.put("/:id", async (req, res) => {
+router.put("/:id", restrict, async (req, res) => {
 	const {
 		username,
 		full_name,
@@ -138,8 +138,8 @@ router.put("/:id", async (req, res) => {
 	}
 });
 
-// deleting a seeker
-router.delete("/:id", (req, res) => {
+// DELETE A SEEKER
+router.delete("/:id", restrict, (req, res) => {
 	const { id } = req.params;
 
 	Seekers.remove(id)

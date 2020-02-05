@@ -67,7 +67,7 @@ router.post("/", restrict, (req, res) => {
 });
 
 // REMOVE a saved match
-router.delete("/:id", (req, res) => {
+router.delete("/:id", restrict, (req, res) => {
 	const { id } = req.params;
 
 	Match.remove(id)

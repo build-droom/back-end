@@ -1,18 +1,12 @@
-const bcrypt = require("bcryptjs");
-const db = require("../../data/dbConfig.js");
-const jwt = require("jsonwebtoken");
 const router = require("express").Router();
-
-const { jwtSecret } = require("../../config/secrets.js");
-
 const Jobs = require("./joblisting-model.js");
 
 const restrict = require("../authenticate-middleware.js");
 
+//ADD A NEW JOBLISTING
 router.post("/", restrict, (req, res) => {
 	const newJob = req.body;
-	db("joblisting")
-		.insert(newJob)
+	Jobs.insert(newJob)
 		.then(joblisting => {
 			res.status(201).json(joblisting);
 		})
@@ -21,7 +15,7 @@ router.post("/", restrict, (req, res) => {
 		});
 });
 
-//GET requests to /api/joblisting returns list of all joblistings
+//GET RETURNS LIST OF ALL JOBLISTINGS IN DATABASE
 router.get("/", restrict, (req, res) => {
 	Jobs.find()
 		.then(joblisting => {
@@ -33,8 +27,8 @@ router.get("/", restrict, (req, res) => {
 		});
 });
 
-//GET by id /api/jobs:id joblisting
-router.get("/:id", async (req, res) => {
+//GET JOBLISTING WITH SPECIFIC ID
+router.get("/:id", restrict, async (req, res) => {
 	const job = await Jobs.findById(req.params.id);
 	if (job) {
 		res.status(200).json(job);
@@ -46,8 +40,8 @@ router.get("/:id", async (req, res) => {
 	}
 });
 
-//GET by id /api/jobs/company/:id
-router.get("/company/:id", async (req, res) => {
+//GET  JOBLISTINGS POSTED BY A SPECIFIC COMPANY by id /api/jobs/company/:id
+router.get("/company/:id", restrict, async (req, res) => {
 	const jobs = await Jobs.findJobById(req.params.id);
 	if (jobs) {
 		res.status(200).json(jobs);
@@ -59,8 +53,8 @@ router.get("/company/:id", async (req, res) => {
 	}
 });
 
-// deleting a joblisting
-router.delete("/:id", (req, res) => {
+// DELETE A SPECIFIED JOB LISTING VIA ID
+router.delete("/:id", restrict, (req, res) => {
 	const { id } = req.params;
 
 	Jobs.remove(id)
@@ -78,14 +72,12 @@ router.delete("/:id", (req, res) => {
 		});
 });
 
-//put request to api/joblisting
-router.put("/:id", (req, res) => {
+//UPDATE A JOBLISTING
+router.put("/:id", restrict, (req, res) => {
 	const { id } = req.params;
 	const changes = req.body;
 
-	db("joblisting")
-		.where({ id })
-		.update(changes)
+	Jobs.update(id, changes)
 		.then(job => {
 			if (job) {
 				res.json({ update: job });
