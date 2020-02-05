@@ -40,6 +40,23 @@ router.get("/:id", async (req, res) => {
 	}
 });
 
+// async function add(match) {
+// 	const [id] = await db("matches").insert(match);
+
+// 	return findById(id);
+// }
+
+// router.post("/", (req, res) => {
+// 	const newMatch = req.body;
+// 	Match.add(newMatch)
+// 		.then(matches => {
+// 			res.status(201).json();
+// 		})
+// 		.catch(err => {
+// 			console.log(err);
+// 		});
+// });
+
 //GET by id /api/companies/jobs/:id joblisting
 // router.get("/jobs/:id", async (req, res) => {
 // 	const job = await Companies.findJobById(req.params.id);
