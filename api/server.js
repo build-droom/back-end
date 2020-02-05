@@ -6,7 +6,7 @@ const restrict = require("./authenticate-middleware.js");
 const companiesRouter = require("./companies/companies-router.js");
 const seekersRouter = require("./seekers/seekers-router.js");
 const jobsRouter = require("./joblisting/joblisting-router");
-// const appliedRouter = require("./appliedTo/appliedTo-router");
+const appliedRouter = require("./appliedTo/appliedTo-router");
 const matchRouter = require("./matches/matches-router");
 
 const server = express();
@@ -18,7 +18,7 @@ server.use(express.json());
 server.use("/api/companies", companiesRouter);
 server.use("/api/seekers", seekersRouter);
 server.use("/api/jobs", jobsRouter);
-// server.use("/api/apply", restrict, appliedRouter);
+server.use("/api/apply", restrict, appliedRouter);
 server.use("/api/matches", matchRouter);
 
 server.get("/", (req, res) => {

@@ -1,13 +1,8 @@
-const jwt = require("jsonwebtoken");
 const router = require("express").Router();
-
-const { jwtSecret } = require("../../config/secrets.js");
-
 const Match = require("./matches-model.js");
-
 const restrict = require("../authenticate-middleware.js");
 
-// GET requests to /api/matches returns list of ALL SAVED matched entries
+// GET list of ALL SAVED matched entries
 router.get("/", restrict, (req, res) => {
 	Match.find()
 		.then(matches => {
@@ -16,7 +11,22 @@ router.get("/", restrict, (req, res) => {
 		.catch(err => res.send(err));
 });
 
-//seekers looking for matching jobs
+// GET list of ALL SAVED matched entries by id
+//need to fix
+router.get("/favejobs/:id", restrict, async (req, res) => {
+	const id = req.params.id;
+	const saved = await Match.faveOfSeeker(id);
+	if (!saved) {
+		res.status(200).json(saved);
+	} else {
+		console.log("error in attempt to get saved matches");
+		res
+			.status(500)
+			.json({ error: "Error cannot retrieve saved matches with this user id" });
+	}
+});
+
+//GET find jobs that matches seeker with specified id
 router.get("/matchseeker/:id", restrict, async (req, res) => {
 	const id = req.params.id;
 	const matches = await Match.findJobs(id);
@@ -24,11 +34,13 @@ router.get("/matchseeker/:id", restrict, async (req, res) => {
 		res.status(200).json(matches);
 	} else {
 		console.log("error in GET api/matches/:id");
-		res.status(500).json({ error: "Could not find any matches" });
+		res
+			.status(500)
+			.json({ error: "Could not find any jobs that match you today." });
 	}
 });
 
-//companies looking for matched seekers
+//companies looking for matched seekers(find seekers)
 router.get("/matchjob/:id", restrict, async (req, res) => {
 	const id = req.params.id;
 	const matches = await Match.findSeeker(id);
@@ -36,11 +48,13 @@ router.get("/matchjob/:id", restrict, async (req, res) => {
 		res.status(200).json(matches);
 	} else {
 		console.log("error in GET api/matches/:id");
-		res.status(500).json({ error: "Could not find any matches" });
+		res
+			.status(500)
+			.json({ error: "Could not find any job seekers to match that job" });
 	}
 });
 
-//add matches to saved favorites
+//SAVE matches to favorites
 router.post("/", restrict, (req, res) => {
 	const match = req.body;
 	Match.add(match)
@@ -52,7 +66,7 @@ router.post("/", restrict, (req, res) => {
 		});
 });
 
-// deleting a saved match
+// REMOVE a saved match
 router.delete("/:id", (req, res) => {
 	const { id } = req.params;
 

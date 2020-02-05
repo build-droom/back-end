@@ -90,6 +90,8 @@ exports.up = async function(knex) {
 			.unsigned()
 			.references("id")
 			.inTable("joblisting");
+		tbl.boolean("sent_by_seeker").notNullable();
+		tbl.boolean("sent_by_company").notNullable();
 	});
 };
 

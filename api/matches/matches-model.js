@@ -7,7 +7,8 @@ module.exports = {
 	findById,
 	remove,
 	findJobs,
-	findSeeker
+	findSeeker,
+	faveOfSeeker
 };
 
 async function add(match) {
@@ -45,9 +46,27 @@ function findJobs(id) {
 
 function findSeeker(id) {
 	return db("seekers")
+		.select()
 		.where("joblisting.id", id)
 		.join("joblisting", "joblisting.job_position", "seekers.occupation")
 		.select();
+}
+
+// select *
+// from matches
+// join seekers on matches.seekers_id = seekers.id
+// join joblisting on matches.joblisting_id = joblisting.id
+// where ( "fave_of_seeker"="true" and "joblisting_id"=4)
+
+//need to fix
+async function faveOfSeeker(id) {
+	return db("matches")
+		.select()
+		.where("matches.joblisting_id", id)
+		.join("seekers", "matches.seekers_id", "seekers.id")
+		.join("joblisting", "matches.joblisting_id", "joblisting.id");
+
+	// .where("seekers.id", id, "fave_of_seeker", "true");
 }
 
 function remove(id) {

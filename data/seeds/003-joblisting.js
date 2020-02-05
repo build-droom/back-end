@@ -42,7 +42,7 @@ exports.seed = function(knex) {
 					company: "comp5",
 					description: "blah blah blah",
 					job_location: "Texas",
-					experience_required: "true",
+					experience_required: true,
 					salary: 100000,
 					employment_type: "part-time"
 				},

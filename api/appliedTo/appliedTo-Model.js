@@ -5,15 +5,13 @@ module.exports = {
 	find,
 	findBy,
 	findById,
-	findJobById,
 	remove,
-	findCompanyById,
 	insert,
 	update
 };
-function insert(job) {
+function insert(apply) {
 	return db("appliedTo")
-		.insert(job, "id")
+		.insert(apply, "id")
 		.then(ids => ({ id: ids[0] }));
 }
 
@@ -35,21 +33,6 @@ function findById(id) {
 	return db("appliedTo")
 		.where({ id })
 		.first();
-}
-
-function findJobById(id) {
-	return db("appliedTo").where({ companies_id: id });
-}
-
-function findCompanyById(id) {
-	return db("appliedTo")
-		.join("joblisting", "joblisting.companies_id", "companies.id")
-		.select(
-			"companies.*",
-			"joblisting.job_tile as joblisting_position",
-			"joblisting.id"
-		)
-		.where("companies.id", id);
 }
 
 function remove(id) {

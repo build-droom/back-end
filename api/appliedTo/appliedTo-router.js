@@ -1,39 +1,26 @@
-const bcrypt = require("bcryptjs");
 const db = require("../../data/dbConfig.js");
-const jwt = require("jsonwebtoken");
 const router = require("express").Router();
-
-const { jwtSecret } = require("../../config/secrets.js");
 
 const Apply = require("./appliedTo-model.js");
 
 const restrict = require("../authenticate-middleware.js");
 
-function signToken(apply) {
-	const payload = {
-		apply
-	};
-
-	const options = {
-		expiresIn: "3d"
-	};
-
-	return jwt.sign(payload, jwtSecret, options);
-}
+//saving a record that user applied
+//need to test
 
 router.post("/", restrict, (req, res) => {
-	const newApply = req.body;
+	const apply = req.body;
 	db("appliedTo")
-		.insert(newApply)
-		.then(appliedTo => {
-			res.status(201).json(appliedTo);
+		.insert(apply)
+		.then(applies => {
+			res.status(201).json(applies);
 		})
 		.catch(err => {
 			console.log(err);
 		});
 });
 
-//GET requests to /api/joblisting returns list of all joblistings
+//GET requests to /api/apply returns list of all application logs
 router.get("/", restrict, (req, res) => {
 	Apply.find()
 		.then(apply => {
