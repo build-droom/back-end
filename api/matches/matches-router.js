@@ -7,7 +7,7 @@ const Match = require("./matches-model.js");
 
 const restrict = require("../authenticate-middleware.js");
 
-// GET requests to /api/matches returns list of ALL matched entries
+// GET requests to /api/matches returns list of ALL SAVED matched entries
 router.get("/", restrict, (req, res) => {
 	Match.find()
 		.then(matches => {
@@ -17,7 +17,7 @@ router.get("/", restrict, (req, res) => {
 });
 
 //seekers looking for matching jobs
-router.get("/:id", restrict, async (req, res) => {
+router.get("/matchseeker/:id", restrict, async (req, res) => {
 	const id = req.params.id;
 	const matches = await Match.findJobs(id);
 	if (matches) {
@@ -29,7 +29,7 @@ router.get("/:id", restrict, async (req, res) => {
 });
 
 //companies looking for matched seekers
-router.get("/matchseeker/:id", restrict, async (req, res) => {
+router.get("/matchjob/:id", restrict, async (req, res) => {
 	const id = req.params.id;
 	const matches = await Match.findSeeker(id);
 	if (matches) {
