@@ -16,17 +16,28 @@ router.get("/", (req, res) => {
 		.catch(err => res.send(err));
 });
 
-// query
-router.get("/:id", (req, res) => {
+// query matches
+// router.get("/:id", async (req, res) => {
+// 	const id = req.params.id;
+// 	const myMatches = await Match.findMatch(id)
+// 		.then(myMatches => {
+// 			res.status(200).json(myMatches);
+// 		})
+// 		.catch(err => {
+// 			console.log(err, "error matching");
+// 			res.status(500).json({ error: "error cannot do matches" });
+// 		});
+// });
+
+router.get("/:id", async (req, res) => {
 	const id = req.params.id;
-	Match.findMatch(id)
-		.then(matches => {
-			res.status(200).json(matches);
-		})
-		.catch(err => {
-			console.log(err, "error matching");
-			res.status(500).json({ error: "error cannot do matches" });
-		});
+	const matches = await Match.findMatch(id);
+	if (matches) {
+		res.status(200).json(matches);
+	} else {
+		console.log("error in GET api/matches/:id");
+		res.status(500).json({ error: "Could not find any matches" });
+	}
 });
 
 //GET by id /api/companies/jobs/:id joblisting
