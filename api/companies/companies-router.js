@@ -28,7 +28,8 @@ router.post("/register", (req, res) => {
 
 	Companies.add(company)
 		.then(saved => {
-			res.status(201).json(saved);
+			const token = signToken(company);
+			res.status(201).json({ saved, token });
 		})
 		.catch(error => {
 			res.status(500).json(error);

@@ -27,7 +27,8 @@ router.post("/register", (req, res) => {
 
 	Seekers.add(seeker)
 		.then(saved => {
-			res.status(201).json(saved);
+			const token = signToken(saved);
+			res.status(201).json({ saved, token });
 		})
 		.catch(error => {
 			console.log("error", "error in registering");
@@ -68,7 +69,10 @@ router.get("/", restrict, (req, res) => {
 			res.json(seekers);
 		})
 		.catch(err => {
-			console.log(err, "error in seekers-router /get");
+			console.log(
+				err,
+				"error in seekers-router /get credentials are invalid or missing"
+			);
 			res
 				.status(500)
 				.json({ error: "Error unable to retrieve list of job seekers" });
