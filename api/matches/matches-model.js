@@ -8,7 +8,8 @@ module.exports = {
 	remove,
 	findJobs,
 	findSeeker,
-	faveOfSeeker
+	faveOfSeeker,
+	faveOfComp
 };
 
 async function add(match) {
@@ -17,8 +18,39 @@ async function add(match) {
 	return findById(id);
 }
 
+// return db("matches")
+// 		.select()
+// 		.where("matches.seekers_id", id)
+// 		.orWhere("fave_of_seeker", true)
+// 		.join("seekers", "matches.seekers_id", "seekers.id")
+// 		.join("joblisting", "matches.joblisting_id", "joblisting.id");
+
 function find() {
-	return db("matches");
+	return db("matches")
+		.select(
+			"matches.id",
+			"matches.fave_of_seeker",
+			"matches.fave_for_job",
+			"matches.matched_occupation",
+			"seekers.id as seekers_id",
+			"seekers.full_name",
+			"seekers.occupation",
+			"seekers.seekers_location",
+			"seekers.education",
+			"seekers.experienced",
+			"seekers.skills",
+			"joblisting.id as joblisting_id",
+			"joblisting.job_location",
+			"joblisting.company",
+			"joblisting.companies_id",
+			"joblisting.job_position",
+			"joblisting.company as company name",
+			"joblisting.job_location",
+			"joblisting.salary",
+			"joblisting.employment_type"
+		)
+		.join("seekers", "matches.seekers_id", "seekers.id")
+		.join("joblisting", "matches.joblisting_id", "joblisting.id");
 }
 
 function findBy(filter) {
@@ -92,15 +124,60 @@ function findSeeker(id) {
 // join joblisting on matches.joblisting_id = joblisting.id
 // where ( "fave_of_seeker"="true" and "joblisting_id"=4)
 
-//need to fix
+// select *
+// from matches
+// join joblisting on  matches.joblisting_id = joblisting.id
+// join seekers on matches.seekers_id = seekers.id
+// where seekers.id =1
+
 async function faveOfSeeker(id) {
 	return db("matches")
-		.select()
-		.where({ "matches.joblisting_id": id, fave_of_seeker: "true" })
+		.select(
+			"matches.id",
+			"matches.fave_of_seeker",
+			"matches.fave_for_job",
+			"matches.matched_occupation",
+			"matches.seekers_id",
+			"joblisting.id as joblisting_id",
+			"joblisting.job_location",
+			"joblisting.company",
+			"joblisting.companies_id",
+			"joblisting.job_position",
+			"joblisting.company as company name",
+			"joblisting.job_location",
+			"joblisting.salary",
+			"joblisting.employment_type"
+		)
+		.join("seekers", "matches.seekers_id", "seekers.id")
+		.join("joblisting", "matches.joblisting_id", "joblisting.id")
+		.where("matches.seekers_id", id)
+		.where("matches.fave_of_seeker", true);
+}
+
+// select *
+// from matches
+// join joblisting on  matches.joblisting_id = joblisting.id
+// join seekers on matches.seekers_id = seekers.id
+// where matches.joblisting_id =3
+async function faveOfComp(id) {
+	return db("matches")
+		.select(
+			"matches.id",
+			"matches.fave_of_seeker",
+			"matches.fave_for_job",
+			"matches.matched_occupation",
+			"matches.joblisting_id",
+			"seekers.id as seekers_id",
+			"seekers.full_name",
+			"seekers.occupation",
+			"seekers.seekers_location",
+			"seekers.education",
+			"seekers.experienced",
+			"seekers.skills"
+		)
 		.join("seekers", "matches.seekers_id", "seekers.id")
 		.join("joblisting", "matches.joblisting_id", "joblisting.id");
-
-	// .where("seekers.id", id, "fave_of_seeker", "true");
+	// .where("matches.joblisting_id", id);
 }
 
 function remove(id) {
