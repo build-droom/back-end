@@ -30,14 +30,14 @@ Content-Typeapplication/json
 
 BODY raw
 {
-"username":"JD1",
-"full_name":"John Doe",
-"seekers_email":"jd1@email",
-"password":"pass1",
-"occupation":"engineer",
+"username":"JD1", NOTNULLABLE
+"full_name":"John Doe", NOTNULLABLE
+"seekers_email":"jd1@email", NOTNULLABLE
+"password":"pass1", NOTNULLABLE
+"occupation":"engineer", NOTNULLABLE
 "seekers_location":"Indiana",
 "education":"bachelors",
-"experienced":"true"
+"experienced":"true" DEFAULTS AS FALSE(THIS IS A BOOLEAN VARIABLE)
 }
 
 TO LOGIN AS A SEEKER
@@ -88,10 +88,10 @@ AuthorizationeyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzZWVrZXIiOnsiaWQiOjEwLCJ1c2
 Content-Typeapplication/json
 BODY raw
 {
-"username":"seeker2",
-"full_name":"patrick star",
-"seekers_email":"starEDIT@email",
-"occupation":"developer",
+"username":"seeker2", NOTNULLABLE
+"full_name":"patrick star", NOTNULLABLE
+"seekers_email":"starEDIT@email", NOTNULLABLE
+"occupation":"developer", NOTNULLABLE
 "seekers_location":"NewYork",
 "education":"bachelor",
 "experienced":"false",
@@ -131,13 +131,13 @@ Authorization
 Content-Typeapplication/json
 BODY raw
 {
-"company_name":"medlabs",
-"company_email":"med@email.com",
-"password":"pass1",
+"company_name":"medlabs", NOTNULLABLE
+"company_email":"med@email.com", NOTNULLABLE
+"password":"pass1", NOTNULLABLE
 "companies_description":"This company is the first one being tested for registration...",
-"companies_location":"NewYork",
+"companies_location":"NewYork", NOTNULLABLE
 "industry_type":"Healthcare",
-"isCompany":"true"
+"isCompany":"true" DEFAULTS AS TRUE
 }
 
 TO LOGIN AS A COMPANY
@@ -206,13 +206,13 @@ Content-Typeapplication/json
 BODY raw
 
 {
-"id":"6",
-"company_name":"bob the builder",
-"company_email":"bb@email.com",
-"password":"pass1",
-"companies_description":"This company builds stuff this was edited to test PUT..",
-"companies_location":"NewYork",
-"industry_type":"Infrastructure"
+"id":"6", NOTNULLABLE
+"company_name":"bob the builder", NOTNULLABLE
+"company_email":"bb@email.com", NOTNULLABLE
+"password":"pass1", NOTNULLABLE
+"companies_description":"This company builds stuff this was edited to test PUT..", NOTNULLABLE
+"companies_location":"NewYork", NOTNULLABLE
+"industry_type":"Infrastructure" NOTNULLABLE
 }
 
 joblisting
@@ -231,12 +231,15 @@ Content-Typeapplication/json
 BODY raw
 
 {
-"companies_id":"6",
-"job_position":"teacher",
-"company":"comp6",
+"companies_id":"6", NOTNULLABLE
+"job_position":"teacher", NOTNULLABLE
+"company":"comp6", NOTNULLABLE
 "job_location":"Arizona",
+"experience required":"defaults to false"
 "salary":"120000"
 }
+
+NOTE THERE ARE MANY KEY VALUE PAIR IN COMPANY AND SEEKERS IF YOU NEED MORE. YOU CAN SEE ALL OF IT IF YOU DO A GET REQUEST. BUT TO UPDATE YOU NEED AT LEAST ALL THE NON NULLABLES MENTIONED ABOVE.
 
 RETRIEVE A LIST OF ALL JOBLISTINGS REGARDLESS OF WHICH COMPANY CREATED THEM
 https://droombwlambda.herokuapp.com/api/jobs
@@ -291,10 +294,10 @@ AuthorizationeyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzZWVrZXIiOnsiaWQiOjEwLCJ1c2
 
 BODY raw
 {
-"companies_id":"3",
-"job_position":"cook",
+"companies_id":"3", NOTNULLABLE
+"job_position":"cook", NOTNULLABLE
 "description":"make good food, bake cakes whatever yum yum",
-"company":"comp3",
+"company":"comp3", NOTNULLABLE
 "job_location":"NJ",
 "education_required":"null",
 "experience_required":"true",
@@ -335,11 +338,11 @@ If the job seeker posted this saved match then flag fave_of_seeker as "true"
 Body of request example:
 
 {
-"id": 7,
-"seekers_id": 3,
-"joblisting_id": 4,
-"fave_of_seeker": "true",
-"fave_for_job": "false",
+"id": 7, NOTNULLABLE
+"seekers_id": 3, NOTNULLABLE
+"joblisting_id": 4, NOTNULLABLE
+"fave_of_seeker": "true", NOTNULLABLE
+"fave_for_job": "false", NOTNULLABLE
 "matched_occupation": "true"
 }
 token is needed.
