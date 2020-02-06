@@ -2,12 +2,12 @@ const server = require("../server.js");
 const request = require("supertest");
 const db = require("../../data/dbConfig.js");
 
-beforeEach(() => {
-	db.migrate
-		.rollback()
-		.then(() => db.migrate.latest())
-		.then(() => db.seed.run());
-});
+// beforeEach(() => {
+// 	db.migrate
+// 		.rollback()
+// 		.then(() => db.migrate.latest())
+// 		.then(() => db.seed.run());
+// });
 
 describe("register functionality", () => {
 	it("should return status 401 without authentication", async () => {

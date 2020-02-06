@@ -3,11 +3,8 @@ const db = require("../../data/dbConfig.js");
 module.exports = {
 	add,
 	find,
-	findJobs,
 	findBy,
 	findById,
-	findJobById,
-	findAllJobByCompanyId,
 	remove,
 	findCompanyById,
 	update
@@ -20,11 +17,7 @@ async function add(company) {
 }
 
 function find() {
-	return db("companies").select("id", "company_email", "password");
-}
-
-function findJobs() {
-	return db("joblisting").select("id", "job_title", "company", "job_location");
+	return db("companies").select();
 }
 
 function findBy(filter) {
@@ -34,17 +27,6 @@ function findBy(filter) {
 function findById(id) {
 	return db("companies")
 		.where({ id })
-		.first();
-}
-function findJobById(id) {
-	return db("joblisting")
-		.where({ id })
-		.first();
-}
-
-function findAllJobByCompanyId(id) {
-	return db("joblisting")
-		.where("company_id", id)
 		.first();
 }
 
