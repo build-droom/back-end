@@ -41,15 +41,48 @@ function findJobs(id) {
 	return db("joblisting")
 		.where("seekers.id", id)
 		.join("seekers", "joblisting.job_position", "seekers.occupation")
-		.select();
+		.select(
+			"joblisting.id as joblisting_id",
+			"joblisting.job_location",
+			"joblisting.company",
+			"joblisting.companies_id",
+			"joblisting.job_position",
+			"joblisting.company as company name",
+			"joblisting.job_location",
+			"joblisting.salary",
+			"joblisting.employment_type",
+			"seekers.id as seekers_id",
+			"seekers.full_name",
+			"seekers.occupation",
+			"seekers.seekers_location",
+			"seekers.education",
+			"seekers.experienced",
+			"seekers.skills"
+		);
 }
 
 function findSeeker(id) {
 	return db("seekers")
-		.select()
-		.where("joblisting.id", id)
 		.join("joblisting", "joblisting.job_position", "seekers.occupation")
-		.select();
+		.select(
+			"seekers.id as seekers_id",
+			"seekers.full_name",
+			"seekers.occupation",
+			"seekers.seekers_location",
+			"seekers.education",
+			"seekers.experienced",
+			"seekers.skills",
+			"joblisting.id as joblisting_id",
+			"joblisting.job_location",
+			"joblisting.company",
+			"joblisting.companies_id",
+			"joblisting.job_position",
+			"joblisting.company as company name",
+			"joblisting.job_location",
+			"joblisting.salary",
+			"joblisting.employment_type"
+		)
+		.where("joblisting.id", id);
 }
 
 // select *
