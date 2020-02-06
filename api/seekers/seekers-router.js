@@ -95,25 +95,25 @@ router.get("/:id", restrict, async (req, res) => {
 // Update a seeker with specified id using PUT /api/seekers/:id
 router.put("/:id", restrict, async (req, res) => {
 	const {
+		id,
 		username,
 		full_name,
 		seekers_email,
 		occupation,
 		seekers_location,
 		education,
-		experienced,
-		id
+		experienced
 	} = req.body;
 
 	if (
+		!id ||
 		!username ||
 		!full_name ||
 		!seekers_email ||
 		!occupation ||
 		!seekers_location ||
 		!education ||
-		!experienced ||
-		!id
+		!experienced
 	) {
 		res.status(400).json({
 			message:

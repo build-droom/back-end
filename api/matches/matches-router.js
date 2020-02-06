@@ -26,18 +26,18 @@ router.get("/faveofseeker/:id", restrict, async (req, res) => {
 });
 
 // GET list of ALL SAVED seekers matched entries by id of jobs entered by company
-// router.get("/faveofcomp", restrict, async (req, res) => {
-// 	const id = req.params.id;
-// 	const saved = await Match.faveOfSeeker(id);
-// 	if (saved) {
-// 		res.status(200).json(saved);
-// 	} else {
-// 		console.log("error in attempt to get saved matches");
-// 		res
-// 			.status(500)
-// 			.json({ error: "Error cannot retrieve saved matches with this user id" });
-// 	}
-// });
+router.get("/faveofcomp/:id", restrict, async (req, res) => {
+	const id = req.params.id;
+	const saved = await Match.faveOfComp(id);
+	if (saved) {
+		res.status(200).json(saved);
+	} else {
+		console.log("error in attempt to get saved matches");
+		res
+			.status(500)
+			.json({ error: "Error cannot retrieve saved matches with this user id" });
+	}
+});
 
 //GET find jobs that matches seeker with specified id
 router.get("/matchseeker/:id", restrict, async (req, res) => {
@@ -70,9 +70,12 @@ router.get("/matchjob/:id", restrict, async (req, res) => {
 //SAVE matches to favorites
 router.post("/", restrict, (req, res) => {
 	const match = req.body;
+	console.log(req.body, "xxxxxxxxxxxxxxxxxxx");
 	Match.add(match)
 		.then(match => {
-			res.status(201).json(match);
+			Match.findById(match).then(response => {
+				res.status(201).json(response);
+			});
 		})
 		.catch(err => {
 			console.log(err);

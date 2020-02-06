@@ -12,10 +12,10 @@ module.exports = {
 	faveOfComp
 };
 
-async function add(match) {
-	const [id] = await db("matches").insert(match);
-
-	return findById(id);
+function add(match) {
+	return db("matches")
+		.insert(match)
+		.then(([id]) => id);
 }
 
 // return db("matches")
@@ -176,9 +176,11 @@ async function faveOfComp(id) {
 			"seekers.skills"
 		)
 		.join("seekers", "matches.seekers_id", "seekers.id")
-		.join("joblisting", "matches.joblisting_id", "joblisting.id");
-	// .where("matches.joblisting_id", id);
+		.join("joblisting", "matches.joblisting_id", "joblisting.id")
+		.where("matches.joblisting_id", id)
+		.where("matches.fave_of_seeker", true);
 }
+// .where("matches.joblisting_id", id);
 
 function remove(id) {
 	return db("matches")
