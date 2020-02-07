@@ -35,8 +35,8 @@ function remove(id) {
 		.del();
 }
 
-async function update(seeker) {
-	await db("seekers")
-		.update(seeker)
-		.where({ id: seeker.id });
+function update(id, changes) {
+	return db("seekers")
+		.where({ id })
+		.update(changes);
 }

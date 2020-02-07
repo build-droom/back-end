@@ -3,7 +3,7 @@ const Match = require("./matches-model.js");
 const restrict = require("../authenticate-middleware.js");
 
 // GET list of ALL SAVED matched entries
-router.get("/", restrict, (req, res) => {
+router.get("/", (req, res) => {
 	Match.find()
 		.then(matches => {
 			res.json(matches);
@@ -12,35 +12,37 @@ router.get("/", restrict, (req, res) => {
 });
 
 // GET list of ALL SAVED job matched entries by id of seeker who entered it
-router.get("/faveofseeker/:id", restrict, async (req, res) => {
+router.get("/faveofseeker/:id", async (req, res) => {
 	const id = req.params.id;
 	const saved = await Match.faveOfSeeker(id);
 	if (saved) {
 		res.status(200).json(saved);
 	} else {
 		console.log("error in attempt to get saved matches");
-		res
-			.status(500)
-			.json({ error: "Error cannot retrieve saved matches with this user id" });
+		res.status(500).json({
+			error: `Error cannot retrieve saved matches for job seeker id:${id}`
+		});
 	}
 });
 
 // GET list of ALL SAVED seekers matched entries by id of jobs entered by company
-router.get("/faveofcomp/:id", restrict, async (req, res) => {
+router.get("/faveofcomp/:id", async (req, res) => {
 	const id = req.params.id;
 	const saved = await Match.faveOfComp(id);
 	if (saved) {
 		res.status(200).json(saved);
 	} else {
-		console.log("error in attempt to get saved matches");
-		res
-			.status(500)
-			.json({ error: "Error cannot retrieve saved matches with this user id" });
+		console.log(
+			`error in attempt to get saved matches for joblisting id:${id}`
+		);
+		res.status(500).json({
+			error: `Error cannot retrieve saved matches with this joblisting id:${id}`
+		});
 	}
 });
 
 //GET find jobs that matches seeker with specified id
-router.get("/matchseeker/:id", restrict, async (req, res) => {
+router.get("/matchseeker/:id", async (req, res) => {
 	const id = req.params.id;
 	const matches = await Match.findJobs(id);
 	if (matches) {
@@ -54,23 +56,23 @@ router.get("/matchseeker/:id", restrict, async (req, res) => {
 });
 
 //companies looking for matched seekers(find seekers)
-router.get("/matchjob/:id", restrict, async (req, res) => {
+router.get("/matchjob/:id", async (req, res) => {
 	const id = req.params.id;
 	const matches = await Match.findSeeker(id);
 	if (matches) {
 		res.status(200).json(matches);
 	} else {
 		console.log("error in GET api/matches/:id");
-		res
-			.status(500)
-			.json({ error: "Could not find any job seekers to match that job" });
+		res.status(500).json({
+			error: `Could not find any job seekers to match that job id:${id}`
+		});
 	}
 });
 
 //SAVE matches to favorites
-router.post("/", restrict, (req, res) => {
+router.post("/", (req, res) => {
 	const match = req.body;
-	console.log(req.body, "xxxxxxxxxxxxxxxxxxx");
+	// console.log(req.body, "xxxxxxxxxxxxxxxxxxx");
 	Match.add(match)
 		.then(match => {
 			Match.findById(match).then(response => {
@@ -83,7 +85,7 @@ router.post("/", restrict, (req, res) => {
 });
 
 // REMOVE a saved match
-router.delete("/:id", restrict, (req, res) => {
+router.delete("/:id", (req, res) => {
 	const { id } = req.params;
 
 	Match.remove(id)
@@ -93,11 +95,30 @@ router.delete("/:id", restrict, (req, res) => {
 			} else {
 				res
 					.status(404)
-					.json({ message: "Could not find a saved match with given id" });
+					.json({ message: `Could not find a saved match with id:${id}` });
 			}
 		})
 		.catch(err => {
-			res.status(500).json({ message: "Failed to delete recipe" });
+			res.status(500).json({ message: `Failed to delete match id:${id}` });
+		});
+});
+
+router.put("/:id", (req, res) => {
+	const { id } = req.params;
+	const changes = req.body;
+
+	Match.findById(id)
+		.then(match => {
+			if (match) {
+				Match.update(changes, id).then(updatedMatch => {
+					res.json(updatedMatch);
+				});
+			} else {
+				res.status(404).json({ message: `Could not find match with id:${id}` });
+			}
+		})
+		.catch(err => {
+			res.status(500).json({ message: `Failed to update match id:${id}` });
 		});
 });
 

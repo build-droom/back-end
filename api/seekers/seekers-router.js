@@ -63,7 +63,7 @@ router.post("/login", (req, res) => {
 });
 
 //GET requests to /api/seekers returns list of all seekers
-router.get("/", restrict, (req, res) => {
+router.get("/", (req, res) => {
 	Seekers.find()
 		.then(seekers => {
 			res.json(seekers);
@@ -80,7 +80,7 @@ router.get("/", restrict, (req, res) => {
 });
 
 //get by id /api/seekers/:id
-router.get("/:id", restrict, async (req, res) => {
+router.get("/:id", async (req, res) => {
 	const seeker = await Seekers.findById(req.params.id);
 	if (seeker) {
 		res.status(200).json(seeker);
@@ -93,53 +93,29 @@ router.get("/:id", restrict, async (req, res) => {
 });
 
 // Update a seeker with specified id using PUT /api/seekers/:id
-router.put("/:id", restrict, async (req, res) => {
-	const {
-		id,
-		username,
-		full_name,
-		seekers_email,
-		occupation,
-		seekers_location,
-		education,
-		experienced
-	} = req.body;
+router.put("/:id", (req, res) => {
+	const { id } = req.params;
+	const changes = req.body;
 
-	if (
-		!id ||
-		!username ||
-		!full_name ||
-		!seekers_email ||
-		!occupation ||
-		!seekers_location ||
-		!education ||
-		!experienced
-	) {
-		res.status(400).json({
-			message:
-				"Make sure username, full_name, seekers_email,occupation,seekers_location, education, experienced are included"
+	Seekers.update(id, changes)
+		.then(seeker => {
+			if (seeker) {
+				res.json({ update: seeker });
+			} else {
+				res
+					.status(404)
+					.json({ message: `Could not find job seeker with given ${id}` });
+			}
+		})
+		.catch(err => {
+			res
+				.status(500)
+				.json({ message: `Failed to update job seeker profile with id:${id}` });
 		});
-	}
-	try {
-		const seeker = await Seekers.findById(req.params.id);
-
-		if (!seeker)
-			return res.status(404).json({
-				message: "Profile doesn't exist"
-			});
-
-		const updatedSeeker = await Seekers.update(req.body);
-
-		res.status(200).json(updatedSeeker);
-	} catch (err) {
-		res.status(500).json({
-			message: " Something went wrong while updating"
-		});
-	}
 });
 
 // DELETE A SEEKER
-router.delete("/:id", restrict, (req, res) => {
+router.delete("/:id", (req, res) => {
 	const { id } = req.params;
 
 	Seekers.remove(id)

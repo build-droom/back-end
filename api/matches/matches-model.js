@@ -9,7 +9,8 @@ module.exports = {
 	findJobs,
 	findSeeker,
 	faveOfSeeker,
-	faveOfComp
+	faveOfComp,
+	update
 };
 
 function add(match) {
@@ -186,4 +187,10 @@ function remove(id) {
 	return db("matches")
 		.where("id", id)
 		.del();
+}
+
+function update(changes, id) {
+	return db("matches")
+		.where({ id })
+		.update(changes);
 }

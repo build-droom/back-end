@@ -4,7 +4,7 @@ const Jobs = require("./joblisting-model.js");
 const restrict = require("../authenticate-middleware.js");
 
 //ADD A NEW JOBLISTING
-router.post("/", restrict, (req, res) => {
+router.post("/", (req, res) => {
 	const newJob = req.body;
 	Jobs.insert(newJob)
 		.then(joblisting => {
@@ -16,7 +16,7 @@ router.post("/", restrict, (req, res) => {
 });
 
 //GET RETURNS LIST OF ALL JOBLISTINGS IN DATABASE
-router.get("/", restrict, (req, res) => {
+router.get("/", (req, res) => {
 	Jobs.find()
 		.then(joblisting => {
 			res.json(joblisting);
@@ -28,7 +28,7 @@ router.get("/", restrict, (req, res) => {
 });
 
 //GET JOBLISTING WITH SPECIFIC ID
-router.get("/:id", restrict, async (req, res) => {
+router.get("/:id", async (req, res) => {
 	const job = await Jobs.findById(req.params.id);
 	if (job) {
 		res.status(200).json(job);
@@ -41,7 +41,7 @@ router.get("/:id", restrict, async (req, res) => {
 });
 
 //GET  JOBLISTINGS POSTED BY A SPECIFIC COMPANY by id /api/jobs/company/:id
-router.get("/company/:id", restrict, async (req, res) => {
+router.get("/company/:id", async (req, res) => {
 	const jobs = await Jobs.findJobById(req.params.id);
 	if (jobs) {
 		res.status(200).json(jobs);
@@ -54,7 +54,7 @@ router.get("/company/:id", restrict, async (req, res) => {
 });
 
 // DELETE A SPECIFIED JOB LISTING VIA ID
-router.delete("/:id", restrict, (req, res) => {
+router.delete("/:id", (req, res) => {
 	const { id } = req.params;
 
 	Jobs.remove(id)
@@ -73,7 +73,7 @@ router.delete("/:id", restrict, (req, res) => {
 });
 
 //UPDATE A JOBLISTING
-router.put("/:id", restrict, (req, res) => {
+router.put("/:id", (req, res) => {
 	const { id } = req.params;
 	const changes = req.body;
 

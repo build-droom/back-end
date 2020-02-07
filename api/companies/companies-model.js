@@ -47,8 +47,8 @@ function remove(id) {
 		.del();
 }
 
-async function update(company) {
-	await db("companies")
-		.update(company)
-		.where({ id: company.id });
+function update(id, changes) {
+	return db("companies")
+		.where({ id })
+		.update(changes);
 }
